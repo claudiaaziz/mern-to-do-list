@@ -89,6 +89,9 @@ router.put('/:toDoId/complete', requiresAuth, async (req, res) => {
   }
 });
 
+// @route   PUT /api/todos/:toDoId/incomplete
+// @desc    Mark a todo as incomplete
+// @accesss Private
 router.put('/:toDoId/incomplete', requiresAuth, async (req, res) => {
   try {
     const toDo = await ToDo.findOne({
@@ -118,8 +121,28 @@ router.put('/:toDoId/incomplete', requiresAuth, async (req, res) => {
   }
 });
 
-// @route   PUT /api/todos/:toDoId/incomplete
-// @desc    Mark a todo as incomplete
+// @route   DELETE /api/todos/:toDoId
+// @desc    Update a todo
 // @accesss Private
+router.delete('/:toDoId', requiresAuth, async (req, res) => {
+  try {
+    const toDo = await ToDo.findOne({
+      user: req.user._id,
+      _id: req.params.toDoId,
+    });
+
+    if (!toDo) return res.status(404).json({ error: 'Could not find ToDo.' });
+
+    await ToDo.findOneAndDelete({
+      user: req.user._id,
+      _id: req.params.toDoId,
+    });
+
+    return res.json({ success: true });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).send(error.message);
+  }
+});
 
 module.exports = router;
