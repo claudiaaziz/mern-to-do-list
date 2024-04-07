@@ -17,7 +17,8 @@ router.get('/test', (req, res) => {
 router.post('/new', requiresAuth, async (req, res) => {
   try {
     const { isValid, errors } = validateToDoInput(req.body);
-    if (!isValid) return res.status(400).json(errors)
+    if (!isValid) return res.status(400).json(errors);
+
     // create a new todo
     const newToDo = new ToDo({
       user: req.user._id,
@@ -56,5 +57,69 @@ router.get('/current', requiresAuth, async (req, res) => {
     return res.status(500).send(error.message);
   }
 });
+
+// @route   PUT /api/todos/:toDoId/complete
+// @desc    Mark a todo as complete
+// @accesss Private
+router.put('/:toDoId/complete', requiresAuth, async (req, res) => {
+  try {
+    const toDo = await ToDo.findOne({
+      user: req.user._id,
+      _id: req.params.toDoId,
+    });
+
+    if (!toDo) return res.status(404).json({ error: 'Could not find ToDo.' });
+
+    if (toDo.complete)
+      return res.status(400).json({ error: 'ToDo is already complete.' });
+
+    const updatedToDo = await ToDo.findOneAndUpdate(
+      {
+        user: req.user._id,
+        _id: req.params.toDoId,
+      },
+      { complete: true, completedAt: new Date() },
+      { new: true }
+    );
+
+    return res.json(updatedToDo);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).send(error.message);
+  }
+});
+
+router.put('/:toDoId/incomplete', requiresAuth, async (req, res) => {
+  try {
+    const toDo = await ToDo.findOne({
+      user: req.user._id,
+      _id: req.params.toDoId,
+    });
+
+    if (!toDo) return res.status(404).json({ error: 'Could not find ToDo.' });
+
+    if (!toDo.complete) {
+      return res.status(400).json({ error: 'ToDo is already incomplete.' });
+    }
+
+    const updatedToDo = await ToDo.findOneAndUpdate(
+      {
+        user: req.user._id,
+        _id: req.params.toDoId,
+      },
+      { complete: false, completedAt: null },
+      { new: true }
+    );
+
+    return res.json(updatedToDo);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).send(error.message);
+  }
+});
+
+// @route   PUT /api/todos/:toDoId/incomplete
+// @desc    Mark a todo as incomplete
+// @accesss Private
 
 module.exports = router;
