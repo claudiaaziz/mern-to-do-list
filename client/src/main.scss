@@ -36,6 +36,14 @@ textarea {
   transition: all 0.2s ease;
   border: 1px solid $primary-dark;
   max-width: 100%;
+  text-decoration: none;
+  color: $primary-dark;
+
+  &:disabled {
+    pointer-events: none;
+    background-color: lightgray;
+    color: $light;
+  }
 
   &:hover {
     background-color: $primary-dark;

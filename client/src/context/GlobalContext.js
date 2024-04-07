@@ -42,7 +42,6 @@ export const GlobalProvider = (props) => {
     getCurrentUser();
   }, []);
 
-  // action: get current user
   const getCurrentUser = async () => {
     try {
       const res = await axios.get('/api/auth/current');

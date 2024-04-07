@@ -34,6 +34,7 @@
       border: none;
       border-radius: 15px;
       border: 1px solid $primary-dark;
+      font-size: 1rem;
 
       &:focus {
         outline: none;
@@ -44,6 +45,11 @@
   &__footer {
     .btn {
       width: 100%;
+
+      &:hover {
+        background-color: transparent;
+        color: $gray;
+      }
     }
 
     .auth__error {
@@ -57,5 +63,23 @@
     font-size: 1rem;
     margin-top: 10px;
     color: $error;
+  }
+
+  &__register {
+    text-align: center;
+    margin-top: 20px;
+  }
+
+  p {
+    margin-bottom: 0;
+  }
+
+  a {
+    color: $primary-dark;
+    transition: all .3s ease;
+
+    &:hover {
+      color: $primary-medium;
+    }
   }
 }
