@@ -121,8 +121,44 @@ router.put('/:toDoId/incomplete', requiresAuth, async (req, res) => {
   }
 });
 
-// @route   DELETE /api/todos/:toDoId
+// @route   PUT /api/todos/:toDoId
 // @desc    Update a todo
+// @accesss Private
+router.put('/:toDoId', requiresAuth, async (req, res) => {
+  try {
+    const toDo = await ToDo.findOne({
+      user: req.user._id,
+      _id: req.params.toDoId,
+    });
+
+    if (!toDo) return res.status(404).json({ error: 'Could not find ToDo.' });
+
+    const { isValid, errors } = validateToDoInput(req.body);
+
+    if (!isValid) return res.status(400).json(errors);
+
+    const updatedToDo = await ToDo.findOneAndUpdate(
+      {
+        user: req.user._id,
+        _id: req.params.toDoId,
+      },
+      {
+        content: req.body.content,
+      },
+      {
+        new: true,
+      }
+    );
+
+    return res.json(updatedToDo);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).send(error.message);
+  }
+});
+
+// @route   DELETE /api/todos/:toDoId
+// @desc    Delete a todo
 // @accesss Private
 router.delete('/:toDoId', requiresAuth, async (req, res) => {
   try {

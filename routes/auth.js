@@ -69,7 +69,7 @@ router.post('/register', async (req, res) => {
 });
 
 // @route   POST /api/auth/login
-// @desc    Login user and return a access token
+// @desc    Login user and return an access token
 // @accesss Public
 router.post('/login', async (req, res) => {
   try {
