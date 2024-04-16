@@ -12,8 +12,10 @@ const validateRegisterInput = (data) => {
   }
 
   // check the name field
-  if (!Validator.isLength(data.name, { min: 2, max: 30 }) || isEmpty(data.name)) {
-    errors.name = 'Name is invalid';
+  if (isEmpty(data.name)) {
+    errors.name = 'Name field cannot be empty.';
+  } else if (!Validator.isLength(data.name, { min: 2, max: 30 })) {
+    errors.email = 'Name is invalid.';
   }
 
   // check the password field
@@ -28,7 +30,7 @@ const validateRegisterInput = (data) => {
     isEmpty(data.confirmPassword) ||
     !Validator.equals(data.password, data.confirmPassword)
   ) {
-    errors.password = 'Password and Confirm Password must match.';
+    errors.confirmPassword = 'Password and Confirm Password must match.';
   }
 
   return {

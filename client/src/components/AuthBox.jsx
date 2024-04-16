@@ -1,17 +1,25 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import '../styles/authBox.scss';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useGlobalContext } from '../context/GlobalContext';
 
 const AuthBox = ({ register }) => {
+  const navigate = useNavigate()
+
+  const { getCurrentUser, user } = useGlobalContext();
+
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
-  const { getCurrentUser } = useGlobalContext();
+
+  useEffect (() => {
+    if (user && navigate) navigate('/dashboard')
+  }, [user, navigate])
+  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -55,6 +63,7 @@ const AuthBox = ({ register }) => {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
               />
+              {errors.name && <p className='auth__error'>{errors.name}</p>}
             </div>
           )}
 
@@ -65,6 +74,7 @@ const AuthBox = ({ register }) => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
+            {errors.email && <p className='auth__error'>{errors.email}</p>}
           </div>
 
           <div className='auth__field'>
@@ -74,6 +84,9 @@ const AuthBox = ({ register }) => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
+            {errors.password && (
+              <p className='auth__error'>{errors.password}</p>
+            )}
           </div>
 
           {register && (
@@ -84,12 +97,16 @@ const AuthBox = ({ register }) => {
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
               />
-              {/* <p className="auth__error">Something went wrong.</p> */}
+              {errors.confirmPassword && (
+                <p className='auth__error'>{errors.confirmPassword}</p>
+              )}
             </div>
           )}
 
           <div className='auth__footer'>
-            <p className='auth__error'>Something went wrong.</p>
+            {!register && Object.keys(errors).length > 0 && (
+              <p className='auth__error'>{errors.error}</p>
+            )}
             <button className='btn' type='submit' disabled={loading}>
               {register ? 'Sign Up' : 'Login'}
             </button>
