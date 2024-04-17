@@ -77,9 +77,6 @@ router.post('/login', async (req, res) => {
     const user = await User.findOne({
       email: new RegExp('^' + req.body.email + '$', 'i'),
     });
-    // console.log('router.post 🩷 user:', user);
-    // debugger
-    
 
     if (!user) res.status(400).json({ error: 'Incorrect email or password.' });
 
